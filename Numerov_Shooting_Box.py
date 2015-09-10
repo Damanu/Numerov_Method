@@ -9,7 +9,7 @@ import datetime
 path="./Measurements"
 
 #---------------Functions-----------------
-def pot_box(x) #potential energy
+def pot_box(x): #potential energy
 	if x>=-L and x<=L
 		return 0
 	else
@@ -28,7 +28,8 @@ q0=psi0*(1-h12*f1)
 f1=2*(pot(-xmax+h)-ee)
 q1=psi1*(1-h12*f1)
 	
-
+for ix in range(2,nx)
+	q2=h**2*f1*psi(ix-1)+2*q1-q0 
 
 #Start Main Program
 if __name__=="__main__":
