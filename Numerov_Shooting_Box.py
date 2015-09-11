@@ -48,7 +48,7 @@ def Numerov_psi(ee,psi0,psi1,L,steps,m,hq):
 	return psi
 
 def main(argv): #Main Program
-	ee=1.2337005
+	ee=4.8
 	psi0=0.0
 	psi1=1.0
 	L=1.0
@@ -58,15 +58,21 @@ def main(argv): #Main Program
 	m=1
 	hq=1
 	eps=0.01
-	while True:
+	mark1=0
+	mark2=0
+	while True: #Shooting method, searching for two points one above 0 and one beneath
 		psi=Numerov_psi(ee,psi0,psi1,L,steps,m,hq)
 		if psi[steps]>0:
 			e0=ee
-			ee+=0.0000000001
+			ee+=0.01
+			mark1=1
 		else:
 			e1=ee
+			mark2=1
 			break
-	while psi[steps]>eps:
+		#if mark1==1 and mark2==1: break		
+	while True: #search for a point where psi < eps --> eps 
+		if abs(psi[steps])<eps: break
 		ee=(e0+e1)/2
 		psi=Numerov_psi(ee,psi0,psi1,L,steps,m,hq)
 		if psi[steps]>0:
@@ -74,6 +80,8 @@ def main(argv): #Main Program
 		else:
 			e1=ee
 		ee=(e0+e1)/2
+		print(psi[steps])
+		print(eps)
 		
 	print(ee)
 	x_axe= [x*2.0/steps for x in range(-steps/2,steps/2+1)]
