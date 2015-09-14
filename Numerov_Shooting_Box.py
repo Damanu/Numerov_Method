@@ -12,7 +12,10 @@ path="./Measurements"
 def pot_box(x,L): #potential energy
 	
 	if x>=-L or x<=L:
-		return 0
+		if x>=-L/8 and x<=L/8:
+			return 0
+		else:
+			return 0
 	else:
 		return float("inf")
 def Numerov_psi(ee,psi0,psi1,L,steps,m,hq):
@@ -48,7 +51,7 @@ def Numerov_psi(ee,psi0,psi1,L,steps,m,hq):
 	return psi
 
 def main(argv): #Main Program
-	ee=4.8
+	ee=5
 	psi0=0.0
 	psi1=1.0
 	L=1.0
@@ -57,19 +60,22 @@ def main(argv): #Main Program
 #	hq=6.62606957*10**-34
 	m=1
 	hq=1
-	eps=0.01
+	eps=0.001
 	mark1=0
 	mark2=0
 	while True: #Shooting method, searching for two points one above 0 and one beneath
 		psi=Numerov_psi(ee,psi0,psi1,L,steps,m,hq)
+		if mark1==1 and mark2==1: break
+		print(psi[steps])
 		if psi[steps]>0:
 			e0=ee
 			ee+=0.01
 			mark1=1
 		else:
 			e1=ee
+			ee+=0.01
 			mark2=1
-			break
+			
 		#if mark1==1 and mark2==1: break		
 	while True: #search for a point where psi < eps --> eps 
 		if abs(psi[steps])<eps: break
@@ -80,12 +86,36 @@ def main(argv): #Main Program
 		else:
 			e1=ee
 		ee=(e0+e1)/2
-		print(psi[steps])
-		print(eps)
+#		print(psi[steps])
+#		print(eps)
 		
 	print(ee)
+
+	#------------Normalize----------------
+	h=L*2/steps
+	psi2=[]
+	T=0
+	ii=0
+	for i in psi:
+		psi2.append(i**2)
+	while True:
+		if ii>=steps:break
+		T+=h/2*(psi2[ii]+psi2[ii+1])
+		ii+=1
+	print(T)
+	for i in range(0,steps+1): psi[i]=psi[i]/np.sqrt(T)	
+	#-----------------------------------
+	
+	psi2=[]
+	for i in psi:
+		psi2.append(i**2)
+
 	x_axe= [x*2.0/steps for x in range(-steps/2,steps/2+1)]
-	plot=plt.plot(x_axe,psi)
+	pot_plot=[]
+	for i in x_axe:
+		pot_plot.append(pot_box(i,L))
+	plot=plt.plot(x_axe,psi2)
+#	plot_pot=plt.plot(x_axe,pot_plot)
 	plt.show()
 			
 		
